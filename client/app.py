@@ -5,8 +5,12 @@ from __future__ import print_function
 import logging
 
 import grpc
+from dotenv import load_dotenv
+import os
 import users_pb2
 import users_pb2_grpc
+
+load_dotenv()
 
 
 def run():
@@ -15,7 +19,9 @@ def run():
     # used in circumstances in which the with statement does not fit the needs
     # of the code.
     print("Will try to get these human beings ...")
-    with grpc.insecure_channel("localhost:50051") as channel:
+
+    server_url = os.environ.get('SERVER_URL')
+    with grpc.insecure_channel(server_url) as channel:
         stub = users_pb2_grpc.UserStub(channel)
         response = stub.GetUsers(users_pb2.GetUsersRequest())
     print(response.users)
